@@ -1,10 +1,16 @@
 <template>
-  <div id="app">
-  </div>
+  <main>
+    <px-header />
+  </main>
 </template>
 
 <script>
+import PxHeader from '@/components/PxHeader'
+
 export default {
-  name: "App"
+  name: "App",
+  components: {
+    PxHeader
+  }
 };
 </script>
