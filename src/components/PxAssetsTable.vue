@@ -6,10 +6,10 @@
         <th>
           <span>Ranking</span>
         </th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Cap. de Mercado</th>
-        <th>Variación 24hs</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Market</th>
+        <th>24hs Variation</th>
         <td class="hidden sm:block"></td>
       </tr>
     </thead>

@@ -5,13 +5,25 @@
 py-2 px-2 border border-green-500 hover:border-transparent rounded
 "
   >
-    <slot></slot>
+    <beat-loader
+      :loading="isLoading"
+      :color="'#68d391'"
+      :size="8"
+    ></beat-loader>
+
+    <slot v-show="isLoading"></slot>
   </button>
 </template>
 
 <script>
 export default {
   name: "PxButton",
+  props: {
+    isLoading: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     onClick() {
       this.$emit("onClickButton");

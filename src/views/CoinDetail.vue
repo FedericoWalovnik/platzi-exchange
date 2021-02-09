@@ -30,23 +30,23 @@
               <span> #{{ asset.rank }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio actual</b>
+              <b class="text-gray-600 mr-10 uppercase">Current Price</b>
               <span> {{ asset.priceUsd | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio más bajo</b>
+              <b class="text-gray-600 mr-10 uppercase">Lowest Price</b>
               <span>{{ min | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio más alto</b>
+              <b class="text-gray-600 mr-10 uppercase">Highest Price</b>
               <span>{{ max | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Precio Promedio</b>
+              <b class="text-gray-600 mr-10 uppercase">Average Price</b>
               <span>{{ avg | dollar }}</span>
             </li>
             <li class="flex justify-between">
-              <b class="text-gray-600 mr-10 uppercase">Variación 24hs</b>
+              <b class="text-gray-600 mr-10 uppercase">24hs Variation</b>
               <span>{{ asset.changePercent24Hr | percent }}</span>
             </li>
           </ul>
@@ -56,7 +56,7 @@
           <button
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            Cambiar
+            Edit
           </button>
 
           <div class="flex flex-row my-5">
@@ -79,21 +79,52 @@
         :max="max"
         :data="history.map(h => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
       />
+
+      <h3 class="text-xl my-10">Best change offers</h3>
+      <table>
+        <tr
+          v-for="market in markets"
+          :key="`${market.exchangeId}-${market.priceUsd}`"
+          class="border-b"
+        >
+          <td>
+            <b>{{ market.exchangeId }}</b>
+          </td>
+          <td>{{ market.priceUsd | dollar }}</td>
+          <td>{{ market.baseSymbol }} / {{ market.quoteSymbol }}</td>
+          <td>
+            <px-button
+              :isLoading="market.isLoading || false"
+              v-if="!market.url"
+              @onClickButton="getWebsite(market)"
+            >
+              <slot>Get Link</slot>
+            </px-button>
+            <a v-else class="hover:underline text-green-600" target="_blanck" :href="market.url">
+              {{ market.url }}
+            </a>
+          </td>
+        </tr>
+      </table>
     </template>
   </div>
 </template>
 
 <script>
 import api from "@/api";
+import PxButton from "@/components/PxButton";
 
 export default {
   name: "CoinDetail",
-
+  components: {
+    PxButton
+  },
   data() {
     return {
       isLoading: false,
       asset: {},
-      history: []
+      history: [],
+      markets: []
     };
   },
   computed: {
@@ -119,11 +150,22 @@ export default {
     await this.getCoin();
   },
   methods: {
+    async getWebsite(exchange) {
+      this.$set(exchange, "isLoading", true);
+
+      const newUrl = await api.getExchange(exchange.exchangeId);
+      this.$set(exchange, "url", newUrl.exchangeUrl);
+
+      this.$set(exchange, "isLoading", false);
+
+    },
+
     async getCoin() {
       const id = this.$route.params.id;
       this.isLoading = true;
       this.asset = await api.getAsset(id);
       this.history = await api.getAssetHistory(id);
+      this.markets = await api.getMarkets(id);
       this.isLoading = false;
     }
   }

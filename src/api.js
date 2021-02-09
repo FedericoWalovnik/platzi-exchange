@@ -10,7 +10,7 @@ const getAssets = async () => {
   }
 };
 
-const getAsset = async (coin) => {
+const getAsset = async coin => {
   try {
     const rawData = await fetch(`${baseUrl}/assets/${coin}`);
     const jsonData = await rawData.json();
@@ -20,7 +20,7 @@ const getAsset = async (coin) => {
   }
 };
 
-const getAssetHistory = async (coin) => {
+const getAssetHistory = async coin => {
   try {
     const now = new Date();
     const end = now.getTime();
@@ -28,7 +28,7 @@ const getAssetHistory = async (coin) => {
     const start = now.getTime();
 
     const rawData = await fetch(
-      `${baseUrl}/assets/${coin}/history?interval=h1&start=${start}&end=${end}`,
+      `${baseUrl}/assets/${coin}/history?interval=h1&start=${start}&end=${end}`
     );
     const jsonData = await rawData.json();
     return jsonData.data;
@@ -37,8 +37,30 @@ const getAssetHistory = async (coin) => {
   }
 };
 
+const getMarkets = async coin => {
+  try {
+    let res = await fetch(`${baseUrl}/assets/${coin}/markets?limit=5`);
+    res = await res.json();
+    return res.data;
+  } catch (error) {
+    console.error("Error en el request");
+  }
+};
+
+const getExchange = async id => {
+  try {
+    let res = await fetch(`${baseUrl}/exchanges/${id}`);
+    res = await res.json();
+    return res.data;
+  } catch (error) {
+    console.error("Error en el request");
+  }
+};
+
 export default {
   getAssets,
   getAsset,
   getAssetHistory,
+  getMarkets,
+  getExchange
 };
