@@ -10,12 +10,20 @@
         <th>Price</th>
         <th>Market</th>
         <th>24hs Variation</th>
-        <td class="hidden sm:block"></td>
+        <td class="hidden sm:block">
+          <input
+            class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
+            id="filter"
+            placeholder="Search..."
+            type="text"
+            v-model="filter"
+          />
+        </td>
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="asset in assets"
+        v-for="asset in filteredAssets"
         :key="asset.id"
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
@@ -32,7 +40,10 @@
           <b>#{{ asset.rank }}</b>
         </td>
         <td>
-          <router-link class="hover:underline text-green-600" :to="{ name: 'coin-detail', params: { id: asset.id } }">
+          <router-link
+            class="hover:underline text-green-600"
+            :to="{ name: 'coin-detail', params: { id: asset.id } }"
+          >
             {{ asset.name }}
           </router-link>
           <small class="ml-1 text-gray-500">
@@ -62,10 +73,15 @@
 </template>
 
 <script>
-import PxButton from '@/components/PxButton'
+import PxButton from "@/components/PxButton";
 export default {
   name: "PxAssetsTable",
   components: { PxButton },
+  data() {
+    return {
+      filter: ""
+    };
+  },
   props: {
     assets: {
       required: true,
@@ -73,9 +89,20 @@ export default {
       default: () => []
     }
   },
+  computed: {
+    filteredAssets() {
+      if (!this.filter) {
+        return this.assets;
+      }
+      return this.assets.filter(a =>
+        a.symbol.toLowerCase().includes(this.filter.toLowerCase()) ||
+        a.name.toLowerCase().includes(this.filter.toLowerCase())
+      );
+    }
+  },
   methods: {
-    goToCoinDetails(id){
-      this.$router.push({name: 'coin-detail', params: {id: id}})
+    goToCoinDetails(id) {
+      this.$router.push({ name: "coin-detail", params: { id: id } });
     }
   }
 };
