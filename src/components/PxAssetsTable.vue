@@ -32,9 +32,9 @@
           <b>#{{ asset.rank }}</b>
         </td>
         <td>{{ asset.name }}</td>
-        <td>{{ asset.priceUsd }}</td>
-        <td>{{ asset.marketCapUsd }}</td>
-        <td>{{ asset.changePercent24Hr }}</td>
+        <td>{{ asset.priceUsd | dollar }}</td>
+        <td>{{ asset.marketCapUsd | dollar }}</td>
+        <td>{{ asset.changePercent24Hr | percent }}</td>
         <td class="hidden sm:block"></td>
       </tr>
     </tbody>
