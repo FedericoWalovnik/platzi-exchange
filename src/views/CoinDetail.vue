@@ -1,6 +1,9 @@
 <template>
   <div class="flex-col">
-    <template>
+      <div class="flex justify-center">
+        <moon-loader :loading="isLoading" :color="'#68d391'" :size="100"></moon-loader>
+      </div>
+    <template v-if="!isLoading">
       <div class="flex flex-col sm:flex-row justify-around items-center">
         <div class="flex flex-col items-center">
           <img
@@ -77,6 +80,7 @@ export default {
 
   data() {
     return {
+      isLoading: false,
       asset: {},
       history: []
     };
@@ -106,8 +110,10 @@ export default {
   methods: {
     async getCoin() {
       const id = this.$route.params.id;
+      this.isLoading = true;
       this.asset = await api.getAsset(id);
       this.history = await api.getAssetHistory(id);
+      this.isLoading = false;
     }
   }
 };

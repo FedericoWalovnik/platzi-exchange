@@ -1,6 +1,11 @@
 <template>
   <div>
-    <px-assets-table :assets="assets" />
+    <moon-loader
+      :loading="isLoading"
+      :color="'#68d391'"
+      :size="100"
+    ></moon-loader>
+    <px-assets-table v-if="!isLoading" :assets="assets" />
   </div>
 </template>
 
@@ -13,12 +18,15 @@ export default {
   components: { PxAssetsTable },
   data() {
     return {
+      isLoading: false,
       assets: []
     };
   },
   async created() {
+    this.isLoading = true;
     const assetsData = await api.getAssets();
     this.assets = assetsData;
+    this.isLoading = false;
   }
 };
 </script>
